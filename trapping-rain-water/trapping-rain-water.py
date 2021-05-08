@@ -1,16 +1,23 @@
+from queue import LifoQueue
 class Solution:
     def trap(self, height: List[int]) -> int:
-        leftMax = [0]*len(height)
-        rightMax = [0]*len(height)
-        result = [0]*len(height)
-        maxItem=0
-        for i in range(len(height)):
-            maxItem = max(maxItem, height[i])
-            leftMax[i] = maxItem
-        maxItem=0
-        for i in reversed(range(len(height))):
-            maxItem = max(maxItem, height[i])
-            rightMax[i] = maxItem
-        for i in range(len(height)):
-            result[i] = min(leftMax[i], rightMax[i]) - height[i]
-        return sum(result)
+        left =0
+        right = len(height)-1
+        left_max = 0
+        right_max=0
+        ans =0
+        while left<right:
+            if height[left] < height[right]:
+                if height[left]>=left_max:
+                    left_max = height[left]
+                else:
+                    ans+= (left_max-height[left])
+                left = left +1
+            else:
+                if height[right]>=right_max:
+                    right_max = height[right]
+                else:
+                    ans+= (right_max-height[right])
+                right = right-1
+        return ans
+
