@@ -1,14 +1,9 @@
 class Solution:
     def lengthOfLongestSubstring(self, s: str) -> int:
-        dicts = {}
-        maxlength = start = 0
-        for i, value in zip(range(len(s)),s):
-            if value in dicts:
-                sums = dicts[value] + 1
-                if sums > start:
-                    start = sums
-            num = i - start + 1
-            if num > maxlength:
-                maxlength = num
-            dicts[value] = i
-        return maxlength
+        i = j = l = 0
+        for j, c in zip(range(len(s)),s):
+            if c in s[i:j]:
+                l = max(l, len(s[i:j]))
+                i += s[i:j].index(c) + 1
+        return max(l, len(s[i:j + 1]))
+    
