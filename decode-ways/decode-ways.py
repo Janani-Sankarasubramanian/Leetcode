@@ -1,4 +1,3 @@
-from functools import lru_cache
 class Solution(object):
     
     def numDecodings(self, s) -> int:
@@ -6,23 +5,19 @@ class Solution(object):
         :type s: str
         :rtype: int
         """
-        @lru_cache(maxsize=None)
-        def recursiveWithMemo(index, s) -> int:
-            # If you reach the end of the string
-            # Return 1 for success.
-            if index == len(s):
-                return 1
-
-            # If the string starts with a zero, it can't be decoded
-            if s[index] == '0':
-                return 0
-
-            if index == len(s)-1:
-                return 1
-        
-            answer = recursiveWithMemo(index + 1, s)
-            if int(s[index : index + 2]) <= 26:
-                answer += recursiveWithMemo(index + 2, s)
-
-            return answer
-        return recursiveWithMemo(0, s)
+        if s[0] == "0" or s is None or len(s)==0:
+            return 0
+    
+        dp = [0 for _ in range(len(s)+1)]
+        dp[0] = 1
+        dp[1] = 1 if s[0]!='0' else 0
+        for i in range(2, len(s)+1):
+            first = int(s[i-1:i])
+            second = int(s[i-2:i])
+            if first>=1 and first<=9:
+                dp[i] += dp[i-1]
+            
+            if second>=10 and second<=26:
+                dp[i] += dp[i-2]
+                
+        return dp[len(s)]
