@@ -30,7 +30,7 @@ class RandomizedSet:
         else:
             last_element, idx = self.list[-1], self.dict[val]
             self.list[idx], self.dict[last_element] = last_element, idx
-            self.list.pop()
+            del self.list[-1]
             del self.dict[val]
             return True
 
@@ -39,7 +39,7 @@ class RandomizedSet:
         """
         Get a random element from the set.
         """
-        return random.choice(self.list)
+        return choice(self.list)
 
 
 # Your RandomizedSet object will be instantiated and called as such:
