@@ -1,23 +1,21 @@
 class Solution:
     def longestPalindrome(self, s: str) -> str:
-        length = len(s)
-        #dp array to store the state of transition
-        dp = [[False]*length for _ in range(length)]
+        if s == "":
+            return s
+
         ans = ""
-        
-        #if there is only one character, it is a palindrome
-        for i in range(length):
-            dp[i][i] = True
-            ans = s[i]
+        length = len(s)
+        dp = [False for i in range(length)]
+        for j in range(length):
+            for i in range(j+1):
+                if i == j:
+                    dp[i] = True
+                elif j == i+1:
+                    dp[i] = (s[i]==s[j])
+                else:
+                    dp[i] = (dp[i+1] and s[i]==s[j])
 
+                if dp[i] and j-i+1 > len(ans):
+                    ans = s[i:j+1]
 
-        for start in range(length-1,-1,-1):
-            for end in range(start+1, length):
-                if s[start] == s[end]:
-                    #if there are two or more characters, populate the dp array from the end. 
-                    if end - start == 1 or dp[start+1][end-1]:
-                        dp[start][end] = True
-                        if len(ans) < end-start +1:
-                            ans = s[start:end+1]
-        
         return ans
