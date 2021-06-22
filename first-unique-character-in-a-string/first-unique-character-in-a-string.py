@@ -1,9 +1,10 @@
 class Solution:
     def firstUniqChar(self, s: str) -> int:
-        length = len(s)
-        for i in range(length):
-            pivot = s[i]
-            if pivot in s[:i] or pivot in s[i+1:]:
-                continue
-            return i
+        # build hash map : character and how often it appears
+        count = collections.Counter(s)
+        
+        # find the index
+        for idx, ch in enumerate(s):
+            if count[ch] == 1:
+                return idx     
         return -1
