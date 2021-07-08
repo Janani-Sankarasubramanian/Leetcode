@@ -1,16 +1,14 @@
 from collections import defaultdict
 class Solution:
     def subarraySum(self, nums: List[int], k: int) -> int:
-        dic={}
-        dic[0]=1
-        summ=count=0
-        for i in nums:
-            summ+=i
-            if summ-k in dic:
-                count+=dic[summ-k]
-            if summ not in dic:
-                dic[summ]=1
-            else:
-                dic[summ]+=1   
+        count, sum = 0, 0
+        running_sum = defaultdict(int)
+        running_sum[0] = 1
+        
+        for n in nums:
+            sum += n
+            count += running_sum[sum-k]
+            running_sum[sum] += 1
+
         return count
 
