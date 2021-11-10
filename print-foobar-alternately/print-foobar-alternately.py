@@ -1,23 +1,24 @@
-from threading import Lock
+from threading import Condition
+
 class FooBar:
     def __init__(self, n):
         self.n = n
-        self.foo_lock = Lock()
-        self.bar_lock = Lock()
-        self.bar_lock.acquire()
+        self.foo_counter = 0
+        self.bar_counter = 0
+        self.condition = Condition()
 
-    def foo(self, printFoo: 'Callable[[], None]') -> None:
-        
+    def foo(self, printFoo):
         for i in range(self.n):
-            self.foo_lock.acquire()
-            # printFoo() outputs "foo". Do not change or remove this line.
-            printFoo()
-            self.bar_lock.release()
+            with self.condition:
+                self.condition.wait_for(lambda: self.foo_counter == self.bar_counter)
+                printFoo()
+                self.foo_counter += 1
+                self.condition.notify(1)
 
-    def bar(self, printBar: 'Callable[[], None]') -> None:
-        
+    def bar(self, printBar):
         for i in range(self.n):
-            self.bar_lock.acquire()
-            # printBar() outputs "bar". Do not change or remove this line.
-            printBar()
-            self.foo_lock.release()
+            with self.condition:
+                self.condition.wait_for(lambda: self.foo_counter > self.bar_counter)
+                printBar()
+                self.bar_counter += 1
+                self.condition.notify(1)            
