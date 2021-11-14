@@ -1,3 +1,5 @@
+from threading import Lock
+
 class MyCircularQueue:
 
     def __init__(self, k: int):
@@ -5,12 +7,17 @@ class MyCircularQueue:
         self.headIndex = 0
         self.count = 0
         self.capacity = k
+        # the additional attribute to protect the access of our queue
+        self.queueLock = Lock()
 
     def enQueue(self, value: int) -> bool:
-        if self.count == self.capacity:
-            return False
-        self.queue[(self.headIndex + self.count) % self.capacity] = value
-        self.count += 1
+        # automatically acquire the lock when entering the block
+        with self.queueLock:
+            if self.count == self.capacity:
+                return False
+            self.queue[(self.headIndex + self.count) % self.capacity] = value
+            self.count += 1
+        # automatically release the lock when leaving the block
         return True
 
     def deQueue(self) -> bool:
@@ -35,7 +42,6 @@ class MyCircularQueue:
 
     def isFull(self) -> bool:
         return self.count == self.capacity
-        
 
 
 # Your MyCircularQueue object will be instantiated and called as such:
