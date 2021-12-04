@@ -1,68 +1,71 @@
+class Node:
+    def __init__(self, value):
+        self.val = value
+        self.next = self.pre = None
+
+
 class MyCircularDeque:
 
-    def __init__(self, k: int):
-        self.count = 0
-        self.front, self.rear = 0,0
-        self.capacity = k
-        self.data = [-1]*k
+    def __init__(self, k):
+        self.head = self.tail = Node(-1)
+        self.head.next = self.tail
+        self.tail.pre = self.head
+        self.size = k
+        self.curSize = 0
 
-    def insertFront(self, value: int) -> bool:
-        if self.isFull():
-            return False
-        if self.isEmpty():
-            self.data[self.front] = value
-        else:
-            self.front = (self.front - 1) % self.capacity
-            self.data[self.front] = value
-        self.count += 1
-        return True
-            
-            
+    def add(self, value, preNode):
+        new = Node(value)
+        new.pre = preNode
+        new.next = preNode.next
+        new.pre.next = new.next.pre = new
+        self.curSize += 1
 
-    def insertLast(self, value: int) -> bool:
-        if self.isFull():
-            return False
-        if self.isEmpty():
-            self.data[self.rear] = value
-        else:
-            self.rear = (self.rear + 1) % self.capacity
-            self.data[self.rear] = value
-        self.count += 1
-        return True
+    def remove(self, preNode):
+        node = preNode.next
+        node.pre.next = node.next
+        node.next.pre = node.pre
+        self.curSize -= 1
 
-    def deleteFront(self) -> bool:
-        if self.isEmpty():
-            return False
-        self.data[self.front] = -1
-        self.front = (self.front + 1) % self.capacity
-        self.count -= 1
-        if self.isEmpty():
-            self.rear = self.front
-        return True
+    def insertFront(self, value):
+        if self.curSize < self.size:
+            self.add(value, self.head)
+            return True
+        return False
 
-    def deleteLast(self) -> bool:
-        if self.isEmpty():
-            return False
-        self.data[self.rear] = -1
-        self.rear = (self.rear - 1) % self.capacity
-        self.count -= 1
-        if self.isEmpty():
-            self.front = self.rear
-        return True
-    
-    
+    def insertLast(self, value):
+        if self.curSize < self.size:
+            self.add(value, self.tail.pre)
+            return True
+        return False
 
-    def getFront(self) -> int:
-        return self.data[self.front]
+    def deleteFront(self):
+        if self.curSize:
+            self.remove(self.head)
+            return True
+        return False
 
-    def getRear(self) -> int:
-        return self.data[self.rear]
+    def deleteLast(self):
+        if self.curSize:
+            self.remove(self.tail.pre.pre)
+            return True
+        return False
 
-    def isEmpty(self) -> bool:
-        return self.count == 0
+    def getFront(self):
+        if self.curSize:
+            return self.head.next.val
+        return -1
 
-    def isFull(self) -> bool:
-        return self.count == self.capacity
+    def getRear(self):
+        if self.curSize:
+            return self.tail.pre.val
+        return -1
+
+    def isEmpty(self):
+        return self.curSize == 0
+
+    def isFull(self):
+        return self.curSize == self.size
+
 
 
 # Your MyCircularDeque object will be instantiated and called as such:
