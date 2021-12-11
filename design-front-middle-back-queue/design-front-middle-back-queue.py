@@ -1,26 +1,47 @@
+import collections
+
 class FrontMiddleBackQueue:
 
     def __init__(self):
-        self.A = []
+        self.first = collections.deque()
+        self.second = collections.deque()
 
-    def pushFront(self, val):
-        self.A.insert(0, val)
+    def pushFront(self, val: int) -> None:
+        self.first.appendleft(val)
+        if len(self.first) > len(self.second) +1:
+            self.second.appendleft(self.first.pop())
 
-    def pushMiddle(self, val):
-        self.A.insert(len(self.A) // 2, val)
+    def pushMiddle(self, val: int) -> None:
+        if len(self.first) > len(self.second):
+            self.second.appendleft(self.first.pop())
+        self.first.append(val)
 
-    def pushBack(self, val):
-        self.A.append(val)
+    def pushBack(self, val: int) -> None:
+        self.second.append(val)
+        if len(self.first) < len(self.second):
+            self.first.append(self.second.popleft())
 
-    def popFront(self):
-        return (self.A or [-1]).pop(0)
+    def popFront(self) -> int:
+        if not self.first and not self.second: return -1
+        result = self.first.popleft()
+        if len(self.first) < len(self.second):
+            self.first.append(self.second.popleft())
+        return result
 
-    def popMiddle(self):
-        return (self.A or [-1]).pop((len(self.A) - 1) // 2)
+    def popMiddle(self) -> int:
+        if not self.first and not self.second: return -1
+        result = self.first.pop()
+        if len(self.first) < len(self.second):
+            self.first.append(self.second.popleft())
+        return result
 
-    def popBack(self):
-        return (self.A or [-1]).pop()
-
+    def popBack(self) -> int:
+        if not self.first and not self.second: return -1
+        if not self.second: return self.first.pop()
+        result = self.second.pop()
+        if len(self.first) > len(self.second) + 1:
+            self.second.appendleft(self.first.pop())
+        return result
         
 
 
