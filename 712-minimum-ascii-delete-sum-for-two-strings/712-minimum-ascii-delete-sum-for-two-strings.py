@@ -1,28 +1,22 @@
 class Solution:
     def minimumDeleteSum(self, s1: str, s2: str) -> int:
-        dp = [[-1 for j in range(len(s2)+1)] for i in range(len(s1)+1)]
+        n = len(s1)
+        m = len(s2)
         
-        def dead_end_sum(s, i):
-            sum = 0
-            while i < len(s):
-                sum += ord(s[i])
-                i += 1
-            return sum
+        dp = [[0 for j in range(m+1)] for i in range(n+1)]
         
-        def sub(a, b, i, j):
-            n = len(a)
-            m = len(b)
-            if i ==n or j ==m:
-                if i ==n and j ==m: return 0
-                return dead_end_sum(b,j) if i==n else dead_end_sum(a,i)
-            
-            if dp[i][j] !=-1: return dp[i][j]
-            if a[i] == b[j]:
-                sum = sub(a,b,i+1,j+1)
-            else:
-                sum = min(sub(a,b,i+1,j) + ord(a[i]), sub(a,b,i,j+1) + ord(b[j]))
-            dp[i][j] = sum
-            return sum
+        for i in range(1, n+1, 1):
+            dp[i][0] = dp[i-1][0] + ord(s1[i-1])
         
-        return sub(s1,s2,0,0)
-        return 0    
+        for j in range(1, m+1, 1):
+            dp[0][j] = dp[0][j-1] + ord(s2[j-1])
+        
+        for i in range(1, n+1, 1):
+            for j in range(1, m+1, 1):
+                if s1[i-1] == s2[j-1]:
+                    dp[i][j] = dp[i-1][j-1]
+                else:
+                    dp[i][j] = min( dp[i-1][j] + ord(s1[i-1]), dp[i][j-1] + ord(s2[j-1]) )
+        
+        return dp[n][m]
+        
