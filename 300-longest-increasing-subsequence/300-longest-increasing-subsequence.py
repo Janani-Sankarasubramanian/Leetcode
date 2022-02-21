@@ -1,15 +1,16 @@
 class Solution:
     def lengthOfLIS(self, nums: List[int]) -> int:
-        sub = []
-        for num in nums:
-            i = bisect_left(sub, num)
-            # If num is greater than any element in sub
-            if i == len(sub):
-                sub.append(num)
-                
-            # Otherwise, replace the first element in sub greater than or equal to num
-            else:
-                sub[i] = num
-        
-        return len(sub)
+        sub = [0] * len(nums)
+        size = 0
+        for x in nums:
+            i,j= 0, size
+            while i != j:
+                m = (i+j) // 2
+                if sub[m] < x:
+                    i = m+1
+                else:
+                    j=m
+            sub[i] = x
+            size = max(i+1, size)
+        return size
 
