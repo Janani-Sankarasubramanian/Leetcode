@@ -6,28 +6,30 @@
 #         self.right = right
 class Solution:
     def goodNodes(self, root: TreeNode) -> int:
-        #Start a recursive function, initializing it from the root node
-        #keep a max value and the number of good nodes stored
-        #compare the node with the max value and update the number of good nodes if it is greater
-        #if the left node is not none, recall the recursion function with left.
-        #if the right node is not none, recall the recursion function with right.
+        #Start by creating a stack and append the root node and the max value to it, use a Tuple may be
+        #Pop the last element out of the list and compare the max value and the root node
+        #if the comparison is greater, increment the num of good nodes
+        #Add the left and right children of the node to the stack, along with its max value so far
+        #Iterate until the stack is empty and return the final num of good nodes
         
+        stack = [(root, root.val)]
         
-        def countNodes(node, max_so_far):
-            nonlocal num_good_nodes
-            
-            if node is None:
-                return None
+        num_good_nodes = 0
+        
+        while stack:
+            node, max_so_far = stack.pop()
             
             if node.val >= max_so_far:
                 num_good_nodes += 1
-                   
-            if node.right:
-                countNodes(node.right, max(node.val, max_so_far))
-     
+                max_so_far = node.val
+            
             if node.left:
-                countNodes(node.left, max(node.val, max_so_far))
+                stack.append((node.left, max_so_far))
+            
+            if node.right:
+                stack.append((node.right, max_so_far))
         
-        num_good_nodes = 0
-        countNodes(root, float("-inf"))
         return num_good_nodes
+                
+            
+        
