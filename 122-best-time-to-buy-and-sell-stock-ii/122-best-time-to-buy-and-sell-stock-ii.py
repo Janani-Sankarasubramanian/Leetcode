@@ -1,14 +1,8 @@
 class Solution:
     def maxProfit(self, prices: List[int]) -> int:
-        i, maxprofit = 0, 0
-        valley, peak = prices[0], prices[0]
-        while i < len(prices) - 1:
-            while i < len(prices) - 1 and prices[i] >= prices[i+1]:
-                i+=1
-            valley = prices[i]
-            while i < len(prices) - 1 and prices[i] <= prices[i+1]:
-                i+=1
-            peak = prices[i]
-            maxprofit += peak - valley
+        maxprofit = 0
+        for i in range(1, len(prices)):
+            if prices[i] > prices[i-1]:
+                maxprofit += prices[i] - prices[i-1]
         
         return maxprofit
