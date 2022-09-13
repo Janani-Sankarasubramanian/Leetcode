@@ -1,12 +1,18 @@
 class Solution:
     def wordBreak(self, s: str, wordDict: List[str]) -> bool:
-        @lru_cache
-        def wordBreakMemo(s: str, word_dict: FrozenSet[str], start: int):
-            if start == len(s):
-                return True
-            for end in range(start + 1, len(s) + 1):
-                if s[start:end] in word_dict and wordBreakMemo(s, word_dict, end):
-                    return True
-            return False
+        word_set = set(wordDict)
+        q = deque()
+        visited = set()
 
-        return wordBreakMemo(s, frozenset(wordDict), 0)
+        q.append(0)
+        while q:
+            start = q.popleft()
+            if start in visited:
+                continue
+            for end in range(start + 1, len(s) + 1):
+                if s[start:end] in word_set:
+                    q.append(end)
+                    if end == len(s):
+                        return True
+            visited.add(start)
+        return False
