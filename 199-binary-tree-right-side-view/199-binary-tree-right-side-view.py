@@ -9,28 +9,22 @@ class Solution:
         if root is None:
             return []
         
-        queue = deque([root, None,])
+        queue = deque([root,])
         rightside = []
         
-        curr = root
         while queue:
-            prev, curr = curr, queue.popleft()
+            level_length = len(queue)
 
-            while curr:
-                # add child nodes in the queue
-                if curr.left:
-                    queue.append(curr.left)
-                if curr.right:
-                    queue.append(curr.right)
+            for i in range(level_length):
+                node = queue.popleft()
+                # if it's the rightmost element
+                if i == level_length - 1:
+                    rightside.append(node.val)
                     
-                prev, curr = curr, queue.popleft()
-            
-            # the current level is finished
-            # and prev is its rightmost element      
-            rightside.append(prev.val)
-            # add a sentinel to mark the end 
-            # of the next level
-            if queue:
-                queue.append(None)
+                # add child nodes in the queue 
+                if node.left:
+                    queue.append(node.left)
+                if node.right:
+                    queue.append(node.right)
         
         return rightside
