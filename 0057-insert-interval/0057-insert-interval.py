@@ -1,9 +1,14 @@
 class Solution:
     def insert(self, intervals: List[List[int]], newInterval: List[int]) -> List[List[int]]:
-        s, e = newInterval[0] , newInterval[1]
-        left = [i for i in intervals if i[1] < s ]
-        right = [i for i in intervals if i[0] > e]
-        if left + right != intervals:
-            s = min(s, intervals[len(left)][0])
-            e = max(e, intervals[~len(right)][1])
-        return left + [[s, e]] + right
+        res = []
+        for i in range(len(intervals)):
+            if newInterval[1] < intervals[i][0]:
+                res.append(newInterval)
+                return res + intervals[i:]
+            elif newInterval[0] > intervals[i][1]:
+                res.append(intervals[i])
+            else: 
+                newInterval = [min(newInterval[0], intervals[i][0]), max(newInterval[1], intervals[i][1])]
+        
+        res.append(newInterval)
+        return res
